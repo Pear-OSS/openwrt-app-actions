@@ -23,7 +23,7 @@ define Package/$(PKG_NAME)
   SECTION:=services
   CATEGORY:=PCDN
   TITLE:=Pear PCDN binary
-  DEPENDS:=+bash +jq +getopt +ntpdate +whereis +smartmontools +zoneinfo-all +coreutils-nohup +coreutils-install +coreutils-df +coreutils-realpath
+  DEPENDS:=+bash +jq +getopt +ntpdate +whereis +smartmontools +zoneinfo-all +coreutils +coreutils-nohup +coreutils-install +coreutils-df +coreutils-realpath
 endef
 
 define Build/Prepare

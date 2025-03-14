@@ -11,17 +11,13 @@ LUCI_PKGARCH:=all
 PKG_VERSION:=7
 PKG_RELEASE:=$(AUTORELEASE)
 LUCI_DEPENDS:=+fogvdn +jq
-
+LUCI_SUBMENU_FORCED:=none
+LUCI_SECTION:=services
+LUCI_CATEGORY:=PCDN
+LUCI_URL:=
+LUCI_MAINTAINER:=
 
 include $(TOPDIR)/feeds/luci/luci.mk
-
-define Package/$(LUCI_NAME)
-	SECTION:=services
-	CATEGORY:=PCDN
-	TITLE:=$(if $(LUCI_TITLE),$(LUCI_TITLE),LuCI $(LUCI_NAME) $(LUCI_TYPE))
-	DEPENDS:=$(LUCI_DEPENDS)
-	$(if $(LUCI_PKGARCH),PKGARCH:=$(LUCI_PKGARCH))
-endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
@@ -42,6 +38,5 @@ define Package/$(PKG_NAME)/prerm
 #endef
 endef
 
-$(eval $(call BuildPackage,$(LUCI_NAME)))
 
 # call BuildPackage - OpenWrt buildroot signature
