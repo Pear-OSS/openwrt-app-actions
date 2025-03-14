@@ -1,17 +1,6 @@
 name: Build IPKs
 
 on:
-  repository_dispatch:
-  workflow_dispatch:
-    inputs:
-      applications:
-        description: 'build applications, eg: "luci-app-store luci-app-ddnsto". "all" means build all'
-        required: true
-        default: 'fogvdn luci-app-fogvdn'
-      target:
-        description: 'build target ["arm64", "x64", "mipsel", "all"]'
-        required: true
-        default: 'arm64 x64'
   push:
     branches: [ "main" ]
   pull_request:
@@ -30,7 +19,7 @@ jobs:
       - name: Detect build target
         id: set-matrix
         env:
-          MATRIX_TARGET: ${{ github.event.inputs.target }}
+          MATRIX_TARGET: x64 arm64
         run: |
           if [ "x${MATRIX_TARGET}" = "x" -o "x${MATRIX_TARGET}" = "xall" ]; then \
             echo "matrix={\"target\":[\"arm64\", \"x64\", \"mipsel\"]}" >> $GITHUB_OUTPUT; \
@@ -50,7 +39,7 @@ jobs:
     steps:
       - name: Job Info
         run: |
-          apps="${{ github.event.inputs.applications }}"
+          apps="fogvdn luci-app-fogvdn"
           echo "::notice title=Apps::$apps"
 
       - name: Checkout
@@ -136,7 +125,7 @@ jobs:
 
       - name: Update feeds
         run: |
-          apps="${{ github.event.inputs.applications }}"
+          apps="fogvdn luci-app-fogvdn"
           cd ~/openwrt-sdk
           ./scripts/feeds update -a
           grep -lFr '$(call KernelPackage,' feeds/base/package/linux | xargs -rn1 sed -i 's/ FILES:=/ XFILES:=/g' || true
@@ -170,6 +159,11 @@ jobs:
         with:
           path: ${{ github.workspace }}/.dl
           key: ${{ env.CACHE_NAME }}
+
+      - name: 'Remove fogvdn sources'
+        id: rm-fogvdn-src
+        run: |
+          rm -rf "${{ github.workspace }}/.dl/fogvdn*"
 
       - name: Download sources
         id: download

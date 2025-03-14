@@ -2,8 +2,8 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/target.mk
 
 PKG_SOURCE_URL=$(BASE_URL)
-PKG_VERSION:=646
-PKG_RELEASE:=1
+PKG_VERSION:=latest
+PKG_RELEASE:=10
 PKG_NAME:=fogvdn
 PKG_HASH:=skip
 
@@ -46,13 +46,11 @@ endef
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 echo 1 > /tmp/fogvdn_enable_state
-#endef
 endef
 
 define Package/$(PKG_NAME)/prerm
 #!/bin/sh
 /etc/init.d/openfog stop
-#endef
 endef
 
 define Package/$(PKG_NAME)/postrm
@@ -62,7 +60,6 @@ sed -i '/pear_cron.sh/d' /etc/crontabs/root
 
 uci delete ucitrack.@fogvdn[0]
 uci commit ucitrack
-#endef
 endef
 
 
