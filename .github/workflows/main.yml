@@ -163,7 +163,7 @@ jobs:
       - name: 'Remove fogvdn sources'
         id: rm-fogvdn-src
         run: |
-          rm -rf "${{ github.workspace }}/.dl/fogvdn*"
+          rm -rf "${{ github.workspace }}/.dl/fogvdn_PEAR_X64_LINUX_latest.tar.gz"
 
       - name: Download sources
         id: download
