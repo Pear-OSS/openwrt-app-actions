@@ -21,7 +21,7 @@ include $(TOPDIR)/feeds/luci/luci.mk
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-[ -n "${IPKG_INSTROOT}" ] || {
+[ -n "$${IPKG_INSTROOT}" ] || {
 	(. /etc/uci-defaults/30-run_post_update_cmd) && rm -f /etc/uci-defaults/30-run_post_update_cmd 
 	(. /etc/uci-defaults/luci-fogvdn) && rm -f /etc/uci-defaults/luci-fogvdn
 	exit 0
