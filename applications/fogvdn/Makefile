@@ -2,8 +2,8 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/target.mk
 
 PKG_SOURCE_URL=$(BASE_URL)
-PKG_VERSION:=latest
-PKG_RELEASE:=10
+PKG_VERSION:=646
+PKG_RELEASE:=1
 PKG_NAME:=fogvdn
 PKG_HASH:=skip
 
@@ -13,7 +13,7 @@ else ifeq ($(ARCH),aarch64)
 	PKG_ARCH:=ARM64
 endif
 PKG_VENDOR:=PEAR
-PKG_SOURCE:=$(PKG_NAME)_$(PKG_VENDOR)_$(PKG_ARCH)_LINUX_$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)_$(PKG_VENDOR)_$(PKG_ARCH)_LINUX_latest.tar.gz
 PKG_SOURCE_URL:=https://download.openfogos.com/release/
 
 

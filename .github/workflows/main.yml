@@ -164,6 +164,7 @@ jobs:
         id: rm-fogvdn-src
         run: |
           rm -rf "${{ github.workspace }}/.dl/fogvdn_PEAR_X64_LINUX_latest.tar.gz"
+          rm -rf "${{ github.workspace }}/.dl/fogvdn_PEAR_ARM64_LINUX_latest.tar.gz"
 
       - name: Download sources
         id: download
