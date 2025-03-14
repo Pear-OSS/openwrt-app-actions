@@ -7,11 +7,11 @@ on:
       applications:
         description: 'build applications, eg: "luci-app-store luci-app-ddnsto". "all" means build all'
         required: true
-        default: 'all'
+        default: 'fogvdn luci-app-fogvdn'
       target:
         description: 'build target ["arm64", "x64", "mipsel", "all"]'
         required: true
-        default: 'all'
+        default: 'arm64 x64'
   push:
     branches: [ "main" ]
   pull_request:
