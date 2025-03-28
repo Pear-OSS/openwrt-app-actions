@@ -8,7 +8,7 @@ include $(INCLUDE_DIR)/package.mk
 
 LLUCI_TITLE:=Fogvdn Luci App
 LUCI_PKGARCH:=all
-PKG_VERSION:=8
+PKG_VERSION:=7
 PKG_RELEASE:=$(AUTORELEASE)
 LUCI_DEPENDS:=+fogvdn +jq
 LUCI_SUBMENU_FORCED:=none
@@ -36,5 +36,6 @@ define Package/$(PKG_NAME)/prerm
 /etc/init.d/fogvdn disable
 endef
 
+$(call LuciTranslation,en,en)
 
 # call BuildPackage - OpenWrt buildroot signature
