@@ -19,6 +19,11 @@ LUCI_MAINTAINER:=
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
+define Package/$(PKG_NAME)/conffiles
+/etc/config/fogvdn
+/etc/config/storagemanager
+endef
+
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || {
