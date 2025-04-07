@@ -82,9 +82,6 @@ msgstr "OpenFogOS 官网"
 msgid "Warnning: System directory is not allowed!"
 msgstr "警告: 请勿使用系统目录! "
 
-msgid "os_drive_serial"
-msgstr "系统盘序列号"
-
 msgid "Unset: If you are unsure about the operator's restrictions on inter-provincial traffic, it is recommended to choose this option."
 msgstr "不设置：若不确定运营商对流量出省的限制情况，建议选择该项；"
 
