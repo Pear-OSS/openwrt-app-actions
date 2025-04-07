@@ -1,7 +1,7 @@
 msgid "FOGVDN"
 msgstr "OpenFog"
 
-msgid "FOGVDN Node"
+msgid "OpenFog Node"
 msgstr "OpenFog 节点"
 
 msgid "OpenFogOS"
@@ -13,8 +13,14 @@ msgstr "主设置"
 msgid "Fogvdn Settings"
 msgstr "OpenFog 设置"
 
-msgid "username"
+msgid "Node ID"
+msgstr "节点ID"
+
+msgid "Username"
 msgstr "用户名"
+
+msgid "System Drive Serial"
+msgstr "系统盘SN号"
 
 msgid "Region"
 msgstr "地区"
@@ -22,22 +28,22 @@ msgstr "地区"
 msgid "ISP"
 msgstr "运营商"
 
-msgid "Per Line Up BW"
+msgid "Upload Speed(Mbps)"
 msgstr "每条线路上行带宽(Mbps)"
 
-msgid "Per Line Down BW"
+msgid "Download Speed(Mbps)"
 msgstr "每条线路下行带宽(Mbps)"
 
-msgid "Limited Memory"
+msgid "Limited Memory(%)"
 msgstr "内存限制(%)"
 
-msgid "Limited Storage"
+msgid "Limited Storage(%)"
 msgstr "存储限制(%)"
 
 msgid "Limited Area"
 msgstr "地区限制"
 
-msgid "netdev"
+msgid "Interfaces"
 msgstr "网口"
 
 msgid "Storage"
@@ -78,9 +84,6 @@ msgstr "警告: 请勿使用系统目录! "
 
 msgid "os_drive_serial"
 msgstr "系统盘序列号"
-
-msgid "node_id"
-msgstr "节点 ID"
 
 msgid "Unset: If you are unsure about the operator's restrictions on inter-provincial traffic, it is recommended to choose this option."
 msgstr "不设置：若不确定运营商对流量出省的限制情况，建议选择该项；"

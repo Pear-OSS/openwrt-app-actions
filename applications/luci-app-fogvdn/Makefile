@@ -41,6 +41,6 @@ define Package/$(PKG_NAME)/prerm
 /etc/init.d/fogvdn disable
 endef
 
-$(call LuciTranslation,en,en)
+# $(call LuciTranslation,en,en)
 
 # call BuildPackage - OpenWrt buildroot signature
