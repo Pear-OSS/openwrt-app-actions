@@ -3,6 +3,7 @@ local fs = require "nixio.fs"
 local json = require "luci.jsonc"
 m = Map("fogvdn", translate("OpenFog Node"))
 s = m:section(NamedSection, "main", "main", translate("Main"))
+s.description = translate("Note: The OpenFog service must not be operated concurrently with peer services in the same category.")
 
 
 act_status = s:option(DummyValue, "act_status", translate("Status"))
@@ -86,6 +87,7 @@ limited_area:value("2", translate("Regional: Traffic will only be scheduled with
 -- 限制地区 -1 不设置（采用openfogos默认） 0 全国调度，1 省份调度，2 大区调度
 
 nics = s:option(DynamicList,"nics", translate("Interfaces"))
+nics.description = translate("Please utilize the network port with active internet connectivity.")
 -- uci:foreach("multiwan","multiwan",function (instance)
 --     nics:value(instance["tag"])
 -- end
@@ -99,7 +101,7 @@ for k,v in pairs(devs) do
 end
 
 storage = s:option(DynamicList, "storage", translate("Storage"))
-storage.description = translate("Warnning: System directory is not allowed!")
+storage.description = translate("Please prioritize solid-state drives with integrated DRAM cache and write-through capability, preferably meeting enterprise-grade specifications.")
 --filter start with /etc /usr /root /var /tmp /dev /proc /sys /overlay /rom and root
 mount_point = {}
 cmd="/usr/share/pcdn/check_mount_point mount_point"
