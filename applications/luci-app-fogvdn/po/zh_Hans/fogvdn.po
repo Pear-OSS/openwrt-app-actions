@@ -115,6 +115,9 @@ msgstr "未挂载存储空间："
 msgid "Storage Manager"
 msgstr "存储管理"
 
+msgid "Select Storage"
+msgstr "选择存储"
+
 msgid "Manage storage devices on your OpenWrt system."
 msgstr "管理您的 OpenWrt 系统中的存储设备。"
 
