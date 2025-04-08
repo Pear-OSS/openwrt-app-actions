@@ -41,7 +41,7 @@ openfog_link.description = translate("OpenFogOS Official Website")
 
 s = m:section(TypedSection, "instance", translate("Settings"))
 s.anonymous = true
-s.description = translate("Fogvdn Settings")
+s.description = translate("OpenFog Settings")
 
 
 
