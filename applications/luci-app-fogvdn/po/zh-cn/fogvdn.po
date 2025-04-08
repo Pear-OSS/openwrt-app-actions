@@ -89,7 +89,7 @@ msgid "Domestic: Traffic will be scheduled nationwide, resulting in a higher pro
 msgstr "全国调度：流量将会向全国调度，出省比例较高，可能会导致运营商的限制；"
 
 msgid "Provincial: Traffic will only be scheduled within the province where it is located, which is a safer scheduling mode, but the volume of traffic may decrease."
-msgstr "本省调度：流量只会向所在省份内调度，是比较安全的调度模式，但跑量可能会降低；"
+msgstr "本省调度：流量只会向所在省份内调度，是相对安全的调度模式，但跑量可能会降低；"
 
 msgid "Regional: Traffic will only be scheduled within the region where it is located, resulting in a lower proportion of inter-provincial traffic. This mode provides a balanced approach between safety and traffic volume."
 msgstr "大区调度：流量只会向所在大区内调度，出省比例较低，是安全性和跑量之间较为均衡的模式。"
