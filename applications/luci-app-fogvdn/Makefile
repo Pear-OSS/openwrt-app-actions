@@ -24,10 +24,16 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/storagemanager
 endef
 
+define Package/$(PKG_NAME)/preinst
+#!/bin/sh
+[ -f "/etc/config/fogvdn" ] && cp -v -f /etc/config/fogvdn /tmp/fogvdn.bak
+[ -f "/etc/config/storagemanager" ] && cp -v -f /etc/config/storagemanager /tmp/storagemanager.bak
+endef
+
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-[ ! -f "/etc/config/fogvdn" ] && mv /etc/config/fogvdn.default /etc/config/fogvdn
-[ ! -f "/etc/config/storagemanager" ] && mv /etc/config/storagemanager.default /etc/config/storagemanager
+[ -f "/tmp/fogvdn.bak" ] && cp -v -f /tmp/fogvdn.bak /etc/config/fogvdn
+[ -f "/tmp/storagemanager.bak" ] && cp -v -f /tmp/storagemanager.bak /etc/config/storagemanager
 [ -n "$${IPKG_INSTROOT}" ] || {
 	(. /etc/uci-defaults/30-run_post_update_cmd) && rm -f /etc/uci-defaults/30-run_post_update_cmd 
 	(. /etc/uci-defaults/luci-fogvdn) && rm -f /etc/uci-defaults/luci-fogvdn
