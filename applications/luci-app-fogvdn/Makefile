@@ -8,7 +8,7 @@ include $(INCLUDE_DIR)/package.mk
 
 LUCI_TITLE:=Fogvdn Luci App
 LUCI_PKGARCH:=all
-PKG_VERSION:=9
+PKG_VERSION:=10
 PKG_RELEASE:=$(AUTORELEASE)
 PKG_NAME:=luci-app-fogvdn
 LUCI_DEPENDS:=+fogvdn +jq
