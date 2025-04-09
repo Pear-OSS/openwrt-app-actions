@@ -18,13 +18,6 @@ LUCI_CATEGORY:=PCDN
 LUCI_URL:=
 LUCI_MAINTAINER:=
 
-include $(TOPDIR)/feeds/luci/luci.mk
-
-define Package/$(PKG_NAME)/conffiles
-/etc/config/fogvdn
-/etc/config/storagemanager
-endef
-
 define Package/$(PKG_NAME)/preinst
 #!/bin/sh
 [ -f "/etc/config/fogvdn" ] && cp -v -f /etc/config/fogvdn /tmp/fogvdn.bak
@@ -59,6 +52,15 @@ define Package/$(PKG_NAME)/prerm
 /etc/init.d/fogvdn stop
 /etc/init.d/fogvdn disable
 endef
+
+include $(TOPDIR)/feeds/luci/luci.mk
+
+define Package/$(PKG_NAME)/conffiles
+/etc/config/fogvdn
+/etc/config/storagemanager
+endef
+
+$(eval $(call BuildPackage,$(PKG_NAME)))
 
 # $(call LuciTranslation,en,en)
 
