@@ -32,8 +32,18 @@ endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
-[ -f "/tmp/fogvdn.bak" ] && cp -v -f /tmp/fogvdn.bak /etc/config/fogvdn
-[ -f "/tmp/storagemanager.bak" ] && cp -v -f /tmp/storagemanager.bak /etc/config/storagemanager
+if [ -f "/tmp/fogvdn.bak" ]; then
+	cp -v -f /tmp/fogvdn.bak /etc/config/fogvdn
+	rm -f /etc/config/fogvdn.default
+else
+	mv -f /etc/config/fogvdn.default /etc/config/fogvdn
+fi
+if [ -f "/tmp/storagemanager.bak" ];then
+	cp -v -f /tmp/storagemanager.bak /etc/config/storagemanager
+	rm -f /etc/config/storagemanager.default
+else
+	mv -f /etc/config/storagemanager.default /etc/config/storagemanager
+fi
 [ -n "$${IPKG_INSTROOT}" ] || {
 	(. /etc/uci-defaults/30-run_post_update_cmd) && rm -f /etc/uci-defaults/30-run_post_update_cmd 
 	(. /etc/uci-defaults/luci-fogvdn) && rm -f /etc/uci-defaults/luci-fogvdn
