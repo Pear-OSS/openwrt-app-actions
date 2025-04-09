@@ -6,10 +6,11 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/package.mk
 
-LLUCI_TITLE:=Fogvdn Luci App
+LUCI_TITLE:=Fogvdn Luci App
 LUCI_PKGARCH:=all
 PKG_VERSION:=9
 PKG_RELEASE:=$(AUTORELEASE)
+PKG_NAME:=luci-app-fogvdn
 LUCI_DEPENDS:=+fogvdn +jq
 LUCI_SUBMENU_FORCED:=none
 LUCI_SECTION:=services
