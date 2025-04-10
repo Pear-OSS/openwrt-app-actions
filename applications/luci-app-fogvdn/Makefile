@@ -22,6 +22,7 @@ define Package/$(PKG_NAME)/preinst
 #!/bin/sh
 [ -f "/etc/config/fogvdn" ] && cp -v -f /etc/config/fogvdn /tmp/fogvdn.bak
 [ -f "/etc/config/storagemanager" ] && cp -v -f /etc/config/storagemanager /tmp/storagemanager.bak
+exit 0
 endef
 
 define Package/$(PKG_NAME)/postinst
