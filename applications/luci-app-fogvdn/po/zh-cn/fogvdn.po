@@ -22,7 +22,7 @@ msgstr "节点ID"
 msgid "Username"
 msgstr "用户名"
 
-msgid "System Drive Serial"
+msgid "OS Drive Serial"
 msgstr "系统盘SN号"
 
 msgid "Region"

@@ -30,7 +30,7 @@ if fs.access(storage_info_file) then
     storage_info = json.parse(storage_info)
     for k,v in pairs(storage_info) do
         if k == "os_drive_serial" then
-            option = s:option(DummyValue, "_"..k, translate("System Drive Serial"))
+            option = s:option(DummyValue, "_"..k, translate("OS Drive Serial"))
             option.value = v
         end
     end
