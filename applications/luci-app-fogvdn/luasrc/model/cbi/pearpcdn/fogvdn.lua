@@ -246,8 +246,8 @@ function m.on_after_commit(self)
     os.execute("echo " .. enable .. " > /tmp/fogvdn_enable_state")
 
     if enable == "1" then
-        os.execute("service fogvdn enable >/dev/null 2>&1")
-        os.execute("service fogvdn start >/dev/null 2>&1")
+        os.execute("/etc/init.d/fogvdn enable")
+        os.execute("/etc/init.d/fogvdn start")
     end
 end
 

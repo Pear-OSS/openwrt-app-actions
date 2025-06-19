@@ -142,7 +142,7 @@ service_triggers() {
     procd_add_reload_trigger "fogvdn"
 }
 
-reload_servie()
+reload_service()
 {
     stop
     start

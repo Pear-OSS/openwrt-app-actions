@@ -1,3 +1,11 @@
 #!/bin/sh
-mkdir -p /run
-/etc/pear/pear_update/post_command.sh 2>/dev/null
+
+if [ -f /etc/pear/pear_installation_path ]; then
+    . /etc/pear/pear_installation_path
+else
+    INSTALLATION_PATH=''
+fi
+
+[ -d /run ] && rm -rf /run
+ln -sf /var/run /run
+[ -f "${INSTALLATION_PATH}/etc/pear/pear_update/post_command.sh" ] && "${INSTALLATION_PATH}/etc/pear/pear_update/post_command.sh" 2>/dev/null
