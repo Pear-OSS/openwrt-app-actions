@@ -248,6 +248,9 @@ function m.on_after_commit(self)
     if enable == "1" then
         os.execute("/etc/init.d/fogvdn enable")
         os.execute("/etc/init.d/fogvdn start")
+    else
+        os.execute("/etc/init.d/fogvdn stop")
+        os.execute("/etc/init.d/fogvdn disable")
     end
 end
 
