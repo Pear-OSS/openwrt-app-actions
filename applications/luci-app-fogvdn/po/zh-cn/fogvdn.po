@@ -129,3 +129,18 @@ msgstr "暂无可挂载存储空间。"
 
 msgid "Format & Mount"
 msgstr "格式化并挂载"
+
+msgid "ERROR: Invalid number format"
+msgstr "错误：非法的数字格式"
+
+msgid "ERROR: Upload Speed must more than 20 Mbps"
+msgstr "错误：每条线路上行带宽不得小于20Mbps"
+
+msgid "ERROR: Upload Speed must more than 30 Mbps"
+msgstr "错误：每条线路上行带宽不得小于30Mbps"
+
+msgid "Tutorial"
+msgstr "上机教程"
+
+msgid "OpenFog Tutorial"
+msgstr "OpenFog 上机教程"

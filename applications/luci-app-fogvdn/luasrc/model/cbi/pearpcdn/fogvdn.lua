@@ -55,11 +55,28 @@ end
 openfog_link=s:option(DummyValue, "openfog_link", translate("<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Openfogos.com\" onclick=\"window.open('https://openfogos.com/')\" />"))
 openfog_link.description = translate("OpenFogOS Official Website")
 
+local function get_tutorial_url()
+    local openwrt_release = luci.sys.exec("cat /etc/openwrt_release | grep DISTRIB_DESCRIPTION | cut -d '=' -f 2")
+    if openwrt_release and openwrt_release:match("QWRT") then
+        return "https://openfogos.com/help/pearos_openwrt/router.md"
+    elseif openwrt_release and openwrt_release:match("iStoreOS") then
+        return "https://openfogos.com/help/plugin/istoreos.md"
+    else
+        return nil
+    end
+end
+
+tutorial_url = get_tutorial_url()
+if tutorial_url then
+    tutorial_link=s:option(DummyValue, "tutorial_link", "<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"" .. translate("Tutorial") .. "\" onclick=\"window.open('" .. tutorial_url .. "')\" />")
+    tutorial_link.description = translate("OpenFog Tutorial")
+end
+
+
+
 s = m:section(TypedSection, "instance", translate("Settings"))
 s.anonymous = true
 s.description = translate("OpenFog Settings")
-
-
 
 username = s:option(Value, "username", translate("Username"))
 username.description = translate("<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Register\" onclick=\"window.open('https://account.openfogos.com/signup?source%3Dopenfogos.com%26')\" />")
@@ -75,13 +92,80 @@ isp:value("电信",  translate("China Telecom"))
 isp:value("移动",  translate("China Mobile"))
 isp:value("联通",  translate("China Unicom"))
 
+local function get_cpu_arch()
+    local handle = io.popen("uname -m")
+    if not handle then
+        return "unknown"
+    end
+    
+    local arch = handle:read("*a")
+    handle:close()
+    
+    if arch then
+        arch = arch:gsub("%s+", "")
+        return arch
+    end
+    
+    return "unknown"
+end
+
+-- 根据CPU架构获取最小上传速度
+local function get_min_upload_speed()
+    local arch = get_cpu_arch()
+    
+    if arch == "x86_64" then
+        return 30
+    elseif arch == "aarch64" or arch:match("^armv7") then
+        return 20
+    else
+        return 20
+    end
+end
+
 per_line_up_bw = s:option(Value, "per_line_up_bw", translate("Upload Speed(Mbps)"))
 per_line_up_bw.template = "cbi/digitonlyvalue"
 per_line_up_bw.datatype = "uinteger"
 
+-- 添加验证函数
+function per_line_up_bw.validate(self, value, section)
+    local min_upload_speed = get_min_upload_speed()
+    
+    if value and value ~= "" then
+        local num_value = tonumber(value)
+        if not num_value then
+            per_line_up_bw.description = [[<b style="color: red">]] .. translate("ERROR: Invalid number format") .. "</b>"
+            return nil
+        end
+        
+        if num_value < min_upload_speed then
+            local arch = get_cpu_arch()
+            per_line_up_bw.description = [[<b style="color: red">]] .. translate("ERROR: Upload Speed must more than " .. min_upload_speed .. " Mbps") .. "</b>"
+            return nil
+        end
+    end
+    
+    -- 如果验证通过，调用父类的验证方法
+    return Value.validate(self, value, section)
+end
+
 per_line_down_bw = s:option(Value, "per_line_down_bw", translate("Download Speed(Mbps)"))
 per_line_down_bw.template = "cbi/digitonlyvalue"
 per_line_down_bw.datatype = "uinteger"
+
+function per_line_down_bw.validate(self, value, section)
+    local min_upload_speed = get_min_upload_speed()
+    
+    if value and value ~= "" then
+        local num_value = tonumber(value)
+        if not num_value then
+            per_line_down_bw.description = "<span style='color: red; font-weight: bold; '>" .. translate("ERROR: Invalid number format") .. "<span/>"
+            return nil
+        end
+    end
+    
+    -- 如果验证通过，调用父类的验证方法
+    return Value.validate(self, value, section)
+end
 
 limited_memory = s:option(Value, "limited_memory", translate("Limited Memory(%)"))
 limited_memory.optional = true
@@ -224,7 +308,7 @@ if json_dump ~= nil then
         btn=s:option(DummyValue, "_toStorageManager", " ")
         btn.rawhtml = true
         btn.value = translate("<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Mount Page\" />")
-        btn.href="/cgi-bin/luci/admin/pcdn/storage_manager"
+        btn.href="/cgi-bin/luci/admin/services/storage_manager"
         btn.description = translate("Unmounted Storage:")
 
         local first = true
@@ -248,9 +332,6 @@ function m.on_after_commit(self)
     if enable == "1" then
         os.execute("/etc/init.d/fogvdn enable")
         os.execute("/etc/init.d/fogvdn start")
-    else
-        os.execute("/etc/init.d/fogvdn stop")
-        os.execute("/etc/init.d/fogvdn disable")
     end
 end
 
