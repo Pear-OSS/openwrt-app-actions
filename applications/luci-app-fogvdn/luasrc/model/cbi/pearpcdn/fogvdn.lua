@@ -152,21 +152,6 @@ per_line_down_bw = s:option(Value, "per_line_down_bw", translate("Download Speed
 per_line_down_bw.template = "cbi/digitonlyvalue"
 per_line_down_bw.datatype = "uinteger"
 
-function per_line_down_bw.validate(self, value, section)
-    local min_upload_speed = get_min_upload_speed()
-    
-    if value and value ~= "" then
-        local num_value = tonumber(value)
-        if not num_value then
-            per_line_down_bw.description = "<span style='color: red; font-weight: bold; '>" .. translate("ERROR: Invalid number format") .. "<span/>"
-            return nil
-        end
-    end
-    
-    -- 如果验证通过，调用父类的验证方法
-    return Value.validate(self, value, section)
-end
-
 limited_memory = s:option(Value, "limited_memory", translate("Limited Memory(%)"))
 limited_memory.optional = true
 limited_memory.template = "cbi/digitonlyvalue"
