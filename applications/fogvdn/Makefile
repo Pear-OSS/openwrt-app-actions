@@ -2,8 +2,8 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/target.mk
 
 PKG_SOURCE_URL=$(BASE_URL)
-PKG_VERSION:=650
-PKG_RELEASE:=2
+PKG_VERSION:=655
+PKG_RELEASE:=1
 PKG_NAME:=fogvdn
 PKG_HASH:=skip
 
