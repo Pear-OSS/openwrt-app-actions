@@ -50,7 +50,7 @@ endef
 
 define Package/$(PKG_NAME)/prerm
 #!/bin/sh
-/etc/init.d/openfog stop
+/etc/init.d/openfog.sh stop
 endef
 
 define Package/$(PKG_NAME)/postrm
