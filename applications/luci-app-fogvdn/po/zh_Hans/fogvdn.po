@@ -34,6 +34,9 @@ msgstr "运营商"
 msgid "Upload Speed(Mbps)"
 msgstr "每条线路上行带宽(Mbps)"
 
+msgid "It is recommended to provide at least %dGB of storage space."
+msgstr "建议提供 %dGB 以上的存储空间"
+
 msgid "Download Speed(Mbps)"
 msgstr "每条线路下行带宽(Mbps)"
 

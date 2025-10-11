@@ -8,7 +8,7 @@ include $(INCLUDE_DIR)/package.mk
 
 LUCI_TITLE:=Fogvdn Luci App
 LUCI_PKGARCH:=all
-PKG_VERSION:=12
+PKG_VERSION:=13
 PKG_RELEASE:=$(AUTORELEASE)
 PKG_NAME:=luci-app-fogvdn
 LUCI_DEPENDS:=+bash +jq +getopt +ntpdate +whereis +smartmontools +coreutils +coreutils-nohup +coreutils-install +coreutils-df +coreutils-realpath +lsblk

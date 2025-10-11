@@ -122,9 +122,55 @@ local function get_min_upload_speed()
     end
 end
 
+local tmpl = translate("It is recommended to provide at least %dGB of storage space.")
 per_line_up_bw = s:option(Value, "per_line_up_bw", translate("Upload Speed(Mbps)"))
 per_line_up_bw.template = "cbi/digitonlyvalue"
 per_line_up_bw.datatype = "uinteger"
+-- 将模板放在 per_line_up_bw 的 description 中，初值为 0
+per_line_up_bw.description = [[<span id="up_bw_hint_desc" data-template="]]
+  .. luci.util.pcdata(tmpl) .. [[">]]
+  .. luci.util.pcdata(tmpl:format(0)) .. [[</span>]]
+
+-- 3) 渲染结束时注入脚本，定位 per_line_up_bw 的输入框与上面这个 span，实时更新
+local _render = m.render
+function m.render(self, ...)
+  _render(self, ...)
+  luci.http.write([[
+  <script>
+  (function(){
+    // 定位 per_line_up_bw 的 input
+    var input = document.querySelector('input[name="cbid.fogvdn.instance.per_line_up_bw"]');
+    if (!input) {
+      var candidates = document.querySelectorAll('input.cbi-input-text, input[type="text"], input[type="number"]');
+      for (var i = 0; i < candidates.length; i++) {
+        if (candidates[i].name && candidates[i].name.indexOf('cbid.fogvdn.') === 0 &&
+            candidates[i].name.endsWith('.per_line_up_bw')) {
+          input = candidates[i]; break;
+        }
+      }
+    }
+
+    var descSpan = document.getElementById('up_bw_hint_desc');
+    if (!input || !descSpan) return;
+
+    var template = descSpan.getAttribute('data-template') || '';
+    function parseNum(v){ v = (''+(v??'')).trim(); if(!v) return NaN; var n=Number(v); return isNaN(n)?NaN:n; }
+    function recommendG(n){ return 2*n; }
+
+    function update(){
+      var n = parseNum(input.value);
+      var g = isNaN(n) ? 0 : recommendG(n);
+      descSpan.textContent = template.replace('%d', String(g));
+    }
+
+    update();
+    input.addEventListener('input', update);
+    input.addEventListener('change', update);
+  })();
+  </script>
+  ]])
+end
+
 
 -- 添加验证函数
 function per_line_up_bw.validate(self, value, section)
@@ -307,6 +353,59 @@ if json_dump ~= nil then
         end
     end
 end
+
+-------------
+-- -- 1) 去掉单独的 up_bw_hint DummyValue 相关代码
+
+-- -- 2) 在定义 per_line_up_bw 后，设置它自身的 description，并带 data-template
+-- local tmpl = translate("It is recommended to use a hard disk of %dG or above.")
+-- o_up = s:option(Value, "per_line_up_bw", translate("Upload Bandwidth"))  -- 你的原有定义
+-- -- 将模板放在 per_line_up_bw 的 description 中，初值为 0
+-- o_up.description = [[<span id="up_bw_hint_desc" data-template="]]
+--   .. luci.util.pcdata(tmpl) .. [[">]]
+--   .. luci.util.pcdata(tmpl:format(0)) .. [[</span>]]
+
+-- -- 3) 渲染结束时注入脚本，定位 per_line_up_bw 的输入框与上面这个 span，实时更新
+-- local _render = m.render
+-- function m.render(self, ...)
+--   _render(self, ...)
+--   luci.http.write([[
+--   <script>
+--   (function(){
+--     // 定位 per_line_up_bw 的 input
+--     var input = document.querySelector('input[name="cbid.fogvdn.instance.per_line_up_bw"]');
+--     if (!input) {
+--       var candidates = document.querySelectorAll('input.cbi-input-text, input[type="text"], input[type="number"]');
+--       for (var i = 0; i < candidates.length; i++) {
+--         if (candidates[i].name && candidates[i].name.indexOf('cbid.fogvdn.') === 0 &&
+--             candidates[i].name.endsWith('.per_line_up_bw')) {
+--           input = candidates[i]; break;
+--         }
+--       }
+--     }
+
+--     var descSpan = document.getElementById('up_bw_hint_desc');
+--     if (!input || !descSpan) return;
+
+--     var template = descSpan.getAttribute('data-template') || '';
+--     function parseNum(v){ v = (''+(v??'')).trim(); if(!v) return NaN; var n=Number(v); return isNaN(n)?NaN:n; }
+--     function recommendG(n){ return 2*n; }
+
+--     function update(){
+--       var n = parseNum(input.value);
+--       var g = isNaN(n) ? 0 : recommendG(n);
+--       descSpan.textContent = template.replace('%d', String(g));
+--     }
+
+--     update();
+--     input.addEventListener('input', update);
+--     input.addEventListener('change', update);
+--   })();
+--   </script>
+--   ]])
+-- end
+
+-------------
 
 function m.on_after_commit(self)
     local uci = require "luci.model.uci".cursor()
