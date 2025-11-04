@@ -1,0 +1,129 @@
+#!/bin/sh /etc/rc.common
+
+# 基本信息
+USE_PROCD=1
+START=95
+STOP=10
+
+SERVICE_NAME="pear-scutter"
+INSTALLATION_PATH="${installation_path_to_be_replaced}"
+
+BIN="${INSTALLATION_PATH}/bin/pear_scutter"
+CFG_FILE="${INSTALLATION_PATH}/config/scutter.json"
+
+# 如果你的程序本身支持 -c 指定配置文件，可在这里拼接
+# 也可以通过环境变量方式传给程序
+EXTRA_ARGS="--config ${CFG_FILE}"
+
+start_service() {
+    # 如果配置需要在启动前转换（比如从 UCI 生成 JSON），可以在这里调用一个函数
+    generate_json_from_uci  # 可选，见后文
+
+    procd_open_instance
+    procd_set_param command "$BIN" $EXTRA_ARGS
+
+    # 如果程序不是 daemonize（前台运行），procd 会负责为其守护。若程序会自行 daemonize，建议加 --no-daemon 让它前台跑。
+    # procd_set_param respawn [secs] [attempts] [timeout]
+    # 含义：秒内最多 attempts 次崩溃则停止；timeout 是超时
+    procd_set_param respawn 5 10 5
+
+    # 可选：需要网络后启动
+    procd_add_dependency network
+
+    # 可选：设置环境变量
+    # procd_set_param env FOO=bar
+
+    # 可选：日志输出（如果程序输出到 stdout/stderr，logd 会收集）
+    # 如果你希望写文件日志，可在程序中处理；或者以 procd_set_param stdout 1/ stderr 1
+    # procd_set_param stdout 1
+    # procd_set_param stderr 1
+
+    # 配置文件变更自动触发 reload_service（需要实现 reload_service）
+    procd_set_param file "$CFG_FILE"
+
+    procd_close_instance
+}
+
+stop_service() {
+    # procd 会根据 instance 名称杀进程
+    # 如需自定义清理逻辑，可在此添加
+    :
+}
+
+reload_service() {
+    # 热重载逻辑：如果你的程序支持 SIGHUP 重新加载配置，可以在此发送信号
+    # 否则执行 restart_service
+    # 例：procd_send_signal yourapp 1  # 1 == SIGHUP
+    restart
+}
+
+restart() {
+    stop
+    start
+}
+
+# 可选：如果你想用 UCI 管理，并在这里生成 JSON
+generate_json_from_uci() {
+    local UCI_PKG="${SERVICE_NAME}"
+
+    # 收集所有 plan 的 section id 列表
+    local plans
+    plans="$(uci -q show ${UCI_PKG} | sed -n "s/^${UCI_PKG}\.\([^.]*\)=plan$/\1/p")"
+
+    # 开始输出 JSON
+    {
+        echo "{"
+        echo "  \"plans\": ["
+
+        local first_plan=1
+        local s bw_limit max_download_size threads interface
+        local start_time_hour start_time_minute end_time_hour end_time_minute
+
+        for s in $plans; do
+            # 读取每个 plan 的字段
+            bw_limit="$(uci -q get ${UCI_PKG}.${s}.bw_limit)"
+            max_download_size="$(uci -q get ${UCI_PKG}.${s}.max_download_size)"
+            threads="$(uci -q get ${UCI_PKG}.${s}.threads)"
+            interface="$(uci -q get ${UCI_PKG}.${s}.interface)"
+            start_time_hour="$(uci -q get ${UCI_PKG}.${s}.start_time_hour)"
+            start_time_minute="$(uci -q get ${UCI_PKG}.${s}.start_time_minute)"
+            end_time_hour="$(uci -q get ${UCI_PKG}.${s}.end_time_hour)"
+            end_time_minute="$(uci -q get ${UCI_PKG}.${s}.end_time_minute)"
+
+            # 默认值处理（避免为空导致无效 JSON 数字）
+            bw_limit="${bw_limit:-0}"
+            max_download_size="${max_download_size:-0}"
+            threads="${threads:-0}"
+            start_time_hour="${start_time_hour:-0}"
+            start_time_minute="${start_time_minute:-0}"
+            end_time_hour="${end_time_hour:-0}"
+            end_time_minute="${end_time_minute:-0}"
+            interface="${interface:-}"
+
+            # 逗号处理
+            if [ $first_plan -eq 0 ]; then
+                echo "    ,{"
+            else
+                echo "    {"
+                first_plan=0
+            fi
+
+            # 输出每个对象字段（数字不加引号，字符串加引号）
+            echo "      \"bw_limit\": ${bw_limit},"
+            echo "      \"max_download_size\": ${max_download_size},"
+            echo "      \"threads\": ${threads},"
+            # interface 需要进行 JSON 转义（简单处理反斜杠与引号）
+            local iface_json
+            iface_json="$(printf "%s" "$interface" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+            echo "      \"interface\": \"${iface_json}\","
+            echo "      \"start_time_hour\": ${start_time_hour},"
+            echo "      \"start_time_minute\": ${start_time_minute},"
+            echo "      \"end_time_hour\": ${end_time_hour},"
+            echo "      \"end_time_minute\": ${end_time_minute}"
+            echo "    }"
+        done
+
+        echo "  ]"
+        echo "}"
+    } > "$CFG_FILE"
+}

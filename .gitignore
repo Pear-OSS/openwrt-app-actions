@@ -3,3 +3,4 @@ forkapp/forkapp
 tools/forkapp
 forkapp/forkapp.exe
 tools/forkapp.exe
+.envrc
