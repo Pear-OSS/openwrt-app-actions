@@ -6,7 +6,7 @@ START=95
 STOP=10
 
 SERVICE_NAME="pear-scutter"
-INSTALLATION_PATH="${installation_path_to_be_replaced}"
+INSTALLATION_PATH="@{installation_path_to_be_replaced}"
 
 BIN="${INSTALLATION_PATH}/bin/pear_scutter"
 CFG_FILE="${INSTALLATION_PATH}/config/scutter.json"

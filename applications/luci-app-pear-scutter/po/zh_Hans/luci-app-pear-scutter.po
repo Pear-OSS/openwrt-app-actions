@@ -1,0 +1,29 @@
+msgid "PearScutter"
+msgstr "Pear Scutter"
+
+msgid "Wasting download traffic through scheduled plans."
+msgstr "通过定时计划刷下行流量"
+
+msgid "Global"
+msgstr "全局设置"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Plans"
+msgstr "计划任务"
+
+msgid "Bandwidth limit (Mbps)"
+msgstr "带宽限制（Mbps）"
+
+msgid "Max download size (GB)"
+msgstr "单次循环最大下载流量（GB）"
+
+msgid "Threads"
+msgstr "线程数"
+
+msgid "Interfaces"
+msgstr "指定网口"
+
+msgid "Active time range (HH:MM -- HH:MM)"
+msgstr "时间段（HH:MM -- HH:MM）"

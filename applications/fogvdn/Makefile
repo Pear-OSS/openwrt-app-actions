@@ -11,6 +11,8 @@ ifeq ($(ARCH),x86_64)
 	PKG_ARCH:=X64
 else ifeq ($(ARCH),aarch64)
 	PKG_ARCH:=ARM64
+else
+	PKG_ARCH:=ARM
 endif
 PKG_VENDOR:=PEAR
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VENDOR)_$(PKG_ARCH)_LINUX_latest.tar.gz

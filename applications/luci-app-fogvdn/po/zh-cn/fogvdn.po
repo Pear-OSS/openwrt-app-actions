@@ -35,7 +35,7 @@ msgid "Upload Speed(Mbps)"
 msgstr "每条线路上行带宽(Mbps)"
 
 msgid "It is recommended to provide at least %dGB of storage space."
-msgstr "建议提供 %dGB 以上的存储空间"
+msgstr "带宽与存储按1:2配置，建议提供 %dGB 以上的存储空间"
 
 msgid "Download Speed(Mbps)"
 msgstr "每条线路下行带宽(Mbps)"
@@ -67,8 +67,8 @@ msgstr "运行中"
 msgid "Not Running"
 msgstr "未运行"
 
-msgid "<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Openfogos.com\" onclick=\"window.open('https://openfogos.com/')\" />"
-msgstr "<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Openfogos官网\" onclick=\"window.open('https://openfogos.com/')\" />"
+msgid "<input type=\"button\" class=\"cbi-button cbi-button-apply\" style=\"text-transform: none !important;\" value=\"openfogos.com\" onclick=\"window.open('https://openfogos.com/')\" />"
+msgstr "<input type=\"button\" class=\"cbi-button cbi-button-apply\" style=\"text-transform: none !important;\" value=\"OpenFogOS官网\" onclick=\"window.open('https://openfogos.com/')\" />"
 
 msgid "<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Register\" onclick=\"window.open('https://account.openfogos.com/signup?source%3Dopenfogos.com%26')\" />"
 msgstr "<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"前往注册\" onclick=\"window.open('https://account.openfogos.com/signup?source%3Dopenfogos.com%26')\" />"

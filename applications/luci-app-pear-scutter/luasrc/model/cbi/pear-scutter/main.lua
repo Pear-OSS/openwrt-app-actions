@@ -1,6 +1,6 @@
 local m, s, o
 
-m = Map("pear-scutter", translate("PearScutter"), translate("Configure execution plans. Save & Apply to reload service."))
+m = Map("pear-scutter", translate("PearScutter"), translate("Wasting download traffic through scheduled plans."))
 
 -- 全局设置（可选）
 s = m:section(NamedSection, "config", "global", translate("Global"))
@@ -32,19 +32,19 @@ int_option(p, "bw_limit", translate("Bandwidth limit (Mbps)"), "0")
 int_option(p, "max_download_size", translate("Max download size (GB)"), "0")
 int_option(p, "threads", translate("Threads"), "0")
 
-nic = s:option(Value,"nics", translate("Interfaces"))
-cmd="/usr/share/pear-scutter/check_netdev get_netdevs"
-json_dump=luci.sys.exec(cmd)
-devs=json.parse(json_dump)
-for k,v in pairs(devs) do
-    nic:value(k,k.." ["..v.."]")
+nic = s:option(Value, "nics", translate("Interfaces"))
+cmd = "/usr/share/pear-scutter/check_netdev get_netdevs"
+json_dump = luci.sys.exec(cmd)
+devs = json.parse(json_dump)
+for k, v in pairs(devs) do
+    nic:value(k, k .. " [" .. v .. "]")
 end
 
 -- 自定义时间段控件（显示为 HH:MM -- HH:MM）
 local timeRange = p:option(Value, "_time_range", translate("Active time range (HH:MM -- HH:MM)"))
 timeRange.rmempty = false
 timeRange.placeholder = "08:00 -- 23:30"
-timeRange.template = "pear-scutter/timerange"   -- 指向我们自定义的视图模板
+timeRange.template = "pear-scutter/timerange" -- 指向我们自定义的视图模板
 
 -- 将四个字段的值组装为回显文本
 function timeRange.cfgvalue(self, section)
@@ -52,7 +52,9 @@ function timeRange.cfgvalue(self, section)
     local sm = tonumber(m.uci:get("pear-scutter", section, "start_time_minute")) or 0
     local eh = tonumber(m.uci:get("pear-scutter", section, "end_time_hour")) or 0
     local em = tonumber(m.uci:get("pear-scutter", section, "end_time_minute")) or 0
-    local function z2(x) x = tonumber(x) or 0; return (x < 10) and ("0" .. x) or tostring(x) end
+    local function z2(x)
+        x = tonumber(x) or 0; return (x < 10) and ("0" .. x) or tostring(x)
+    end
     return string.format("%s:%s -- %s:%s", z2(sh), z2(sm), z2(eh), z2(em))
 end
 
@@ -69,7 +71,9 @@ function timeRange.write(self, section, value)
     sh, sm, eh, em = tonumber(sh), tonumber(sm), tonumber(eh), tonumber(em)
 
     -- 基本校验与剪裁
-    local function clamp(v, lo, hi) v = tonumber(v) or 0; if v < lo then v = lo end; if v > hi then v = hi end; return v end
+    local function clamp(v, lo, hi)
+        v = tonumber(v) or 0; if v < lo then v = lo end; if v > hi then v = hi end; return v
+    end
     sh = clamp(sh, 0, 23); sm = clamp(sm, 0, 59); eh = clamp(eh, 0, 23); em = clamp(em, 0, 59)
 
     -- 如果解析失败，用 0 填
