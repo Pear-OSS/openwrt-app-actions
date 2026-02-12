@@ -19,10 +19,10 @@ jobs:
       - name: Detect build target
         id: set-matrix
         env:
-          MATRIX_TARGET: x64 arm64
+          MATRIX_TARGET: x64 arm64 arm
         run: |
           if [ "x${MATRIX_TARGET}" = "x" -o "x${MATRIX_TARGET}" = "xall" ]; then \
-            echo "matrix={\"target\":[\"arm64\", \"x64\", \"mipsel\"]}" >> $GITHUB_OUTPUT; \
+            echo "matrix={\"target\":[\"arm64\", \"x64\", \"arm\", \"mipsel\"]}" >> $GITHUB_OUTPUT; \
           else \
             targets=""; \
             for target in ${MATRIX_TARGET}; do \
