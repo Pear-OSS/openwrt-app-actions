@@ -41,12 +41,17 @@ else
 fi
 [ -n "$${IPKG_INSTROOT}" ] && exit 0
 
-for script in /etc/uci-defaults/30-run_post_update_cmd /etc/uci-defaults/luci-fogvdn; do
-	if [ -f "$${script}" ]; then
-		echo "luci-app-fogvdn: $${script} did not complete successfully" >&2
-		exit 1
-	fi
-done
+if [ -f /etc/uci-defaults/30-run_post_update_cmd ]; then
+	echo "luci-app-fogvdn: /etc/uci-defaults/30-run_post_update_cmd did not complete successfully" >&2
+	exit 1
+fi
+
+rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
+if ! uci get ucitrack.@fogvdn[-1] >/dev/null 2>&1; then
+	cfg_id="$$(uci add ucitrack fogvdn 2>/dev/null)" || exit 1
+	uci set ucitrack.$${cfg_id}.init="fogvdn" 2>/dev/null || exit 1
+	uci commit ucitrack 2>/dev/null || exit 1
+fi
 
 echo 1 > /tmp/fogvdn_enable_state
 exit 0
