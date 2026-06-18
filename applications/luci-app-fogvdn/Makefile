@@ -40,7 +40,7 @@ else
 	mv -f /etc/config/storagemanager.default /etc/config/storagemanager
 fi
 [ -n "$${IPKG_INSTROOT}" ] || {
-	(. /etc/uci-defaults/30-run_post_update_cmd) && rm -f /etc/uci-defaults/30-run_post_update_cmd 
+	(. /etc/uci-defaults/30-run_post_update_cmd) && rm -f /etc/uci-defaults/30-run_post_update_cmd || exit 1
 	(. /etc/uci-defaults/luci-fogvdn) && rm -f /etc/uci-defaults/luci-fogvdn
 	exit 0
 }

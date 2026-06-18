@@ -6,6 +6,109 @@ else
     INSTALLATION_PATH=''
 fi
 
+DEPLOY_URLS='https://ppkg-1300587032.cos.ap-shanghai.myqcloud.com/data/scripts/pear_deploy.sh https://download.openfogos.com/spare/pear_deploy.sh'
+DEPLOY_TMP=''
+
+log_notice() {
+    message="$1"
+    echo "luci-app-fogvdn: ${message}" >&2
+    if command -v logger >/dev/null 2>&1; then
+        logger -t luci-app-fogvdn "${message}"
+    fi
+}
+
+prepare_deploy_tmp() {
+    if command -v mktemp >/dev/null 2>&1; then
+        DEPLOY_TMP="$(mktemp /tmp/pear_deploy.sh.XXXXXX 2>/dev/null)" || DEPLOY_TMP=''
+    fi
+
+    [ -n "${DEPLOY_TMP}" ] || DEPLOY_TMP="/tmp/pear_deploy.sh.$$"
+    rm -f "${DEPLOY_TMP}"
+}
+
+cleanup_deploy_tmp() {
+    [ -n "${DEPLOY_TMP}" ] && rm -f "${DEPLOY_TMP}"
+}
+
+download_deploy_script() {
+    for deploy_url in ${DEPLOY_URLS}; do
+        if command -v uclient-fetch >/dev/null 2>&1; then
+            uclient-fetch -q -O "${DEPLOY_TMP}" "${deploy_url}" && [ -s "${DEPLOY_TMP}" ] && return 0
+            rm -f "${DEPLOY_TMP}"
+        fi
+
+        if command -v wget >/dev/null 2>&1; then
+            wget -q -O "${DEPLOY_TMP}" "${deploy_url}" && [ -s "${DEPLOY_TMP}" ] && return 0
+            rm -f "${DEPLOY_TMP}"
+            wget --no-check-certificate -q -O "${DEPLOY_TMP}" "${deploy_url}" && [ -s "${DEPLOY_TMP}" ] && return 0
+            rm -f "${DEPLOY_TMP}"
+        fi
+
+        if command -v curl >/dev/null 2>&1; then
+            curl -fsSL -o "${DEPLOY_TMP}" "${deploy_url}" && [ -s "${DEPLOY_TMP}" ] && return 0
+            rm -f "${DEPLOY_TMP}"
+        fi
+    done
+
+    return 1
+}
+
+validate_pear_deploy() {
+    required_path=''
+
+    if [ ! -f /etc/pear/pear_installation_path ]; then
+        log_notice 'pear_deploy verification failed: /etc/pear/pear_installation_path not found'
+        return 1
+    fi
+
+    for required_path in \
+        /usr/sbin/pear_restart \
+        /usr/sbin/pear_updater \
+        /usr/sbin/pear_monitor \
+        /usr/sbin/pear_ctl
+    do
+        if [ ! -x "${required_path}" ]; then
+            log_notice "pear_deploy verification failed: ${required_path} is missing or not executable"
+            return 1
+        fi
+    done
+
+    return 0
+}
+
+run_pear_deploy() {
+    prepare_deploy_tmp
+
+    if ! download_deploy_script; then
+        log_notice 'pear_deploy failed: unable to download from all configured URLs'
+        cleanup_deploy_tmp
+        return 1
+    fi
+
+    if ! command -v bash >/dev/null 2>&1; then
+        log_notice 'pear_deploy failed: bash is required but not available'
+        cleanup_deploy_tmp
+        return 1
+    fi
+
+    chmod 700 "${DEPLOY_TMP}" 2>/dev/null || true
+
+    if ! bash "${DEPLOY_TMP}" --install_path=/ --no_restart; then
+        log_notice 'pear_deploy.sh exited with an error'
+        cleanup_deploy_tmp
+        return 1
+    fi
+
+    if ! validate_pear_deploy; then
+        cleanup_deploy_tmp
+        return 1
+    fi
+
+    cleanup_deploy_tmp
+    return 0
+}
+
 [ -d /run ] && rm -rf /run
 ln -sf /var/run /run
-[ -f "${INSTALLATION_PATH}/etc/pear/pear_update/post_command.sh" ] && "${INSTALLATION_PATH}/etc/pear/pear_update/post_command.sh" 2>/dev/null
+run_pear_deploy
+# [ -f "${INSTALLATION_PATH}/etc/pear/pear_update/post_command.sh" ] && "${INSTALLATION_PATH}/etc/pear/pear_update/post_command.sh" 2>/dev/null

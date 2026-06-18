@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Job Info
         run: |
-          apps="fogvdn luci-app-fogvdn"
+          apps="luci-app-fogvdn"
           echo "::notice title=Apps::$apps"
 
       - name: Checkout
@@ -125,7 +125,7 @@ jobs:
 
       - name: Update feeds
         run: |
-          apps="fogvdn luci-app-fogvdn"
+          apps="luci-app-fogvdn"
           cd ~/openwrt-sdk
           ./scripts/feeds update -a
           grep -lFr '$(call KernelPackage,' feeds/base/package/linux | xargs -rn1 sed -i 's/ FILES:=/ XFILES:=/g' || true
