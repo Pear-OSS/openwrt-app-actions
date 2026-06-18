@@ -16,6 +16,8 @@ target_config_path=${CONFIG_PATH}/config.json
 
 function run_instance()
 {
+    [ -d "$CONFIG_PATH" ] || mkdir -p "$CONFIG_PATH"
+
     if [ -f $target_config_path ];then
         user_marked=$(cat $target_config_path |jq .user_marked)
         if [ -n "$user_marked" ] && [ "$user_marked" != "null" ];then
@@ -70,7 +72,7 @@ function run_instance()
     # Save modified JSON back to target_config_path
     echo "$json" > $target_config_path
     instance=$1
-    /etc/init.d/openfog.sh stop
+    [ -x /etc/init.d/openfog.sh ] && /etc/init.d/openfog.sh stop
     procd_open_instance ${instance}_check_alive
     procd_set_param command "/usr/share/pcdn/check_alive.sh"
     procd_set_param respawn
@@ -135,7 +137,7 @@ start_service()
 stop_service()
 {
     config_foreach stop_instance instance
-    /etc/init.d/openfog.sh stop
+    [ -x /etc/init.d/openfog.sh ] && /etc/init.d/openfog.sh stop
 }
 
 service_triggers() {

@@ -41,10 +41,12 @@ else
 fi
 [ -n "$${IPKG_INSTROOT}" ] && exit 0
 
-if [ -f /etc/uci-defaults/30-run_post_update_cmd ]; then
-	echo "luci-app-fogvdn: /etc/uci-defaults/30-run_post_update_cmd did not complete successfully" >&2
-	exit 1
-fi
+for script in /etc/uci-defaults/30-run_post_update_cmd /etc/uci-defaults/luci-fogvdn; do
+	if [ -f "$${script}" ]; then
+		echo "luci-app-fogvdn: $${script} did not complete successfully" >&2
+		exit 1
+	fi
+done
 
 echo 1 > /tmp/fogvdn_enable_state
 exit 0
