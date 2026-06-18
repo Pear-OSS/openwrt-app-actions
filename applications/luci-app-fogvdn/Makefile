@@ -39,13 +39,15 @@ if [ -f "/tmp/storagemanager.bak" ];then
 else
 	mv -f /etc/config/storagemanager.default /etc/config/storagemanager
 fi
-[ -n "$${IPKG_INSTROOT}" ] || {
-	(. /etc/uci-defaults/30-run_post_update_cmd) && rm -f /etc/uci-defaults/30-run_post_update_cmd || exit 1
-	(. /etc/uci-defaults/luci-fogvdn) && rm -f /etc/uci-defaults/luci-fogvdn
-	exit 0
-}
+[ -n "$${IPKG_INSTROOT}" ] && exit 0
+
+if [ -f /etc/uci-defaults/30-run_post_update_cmd ]; then
+	echo "luci-app-fogvdn: /etc/uci-defaults/30-run_post_update_cmd did not complete successfully" >&2
+	exit 1
+fi
+
 echo 1 > /tmp/fogvdn_enable_state
-service fogvdn start 2>/dev/null
+exit 0
 endef
 
 define Package/$(PKG_NAME)/prerm
