@@ -9,48 +9,26 @@ on:
 
 env:
   TZ: Asia/Shanghai
+  MATRIX_TARGET: all
+  SDK_NAME: openwrt-sdk-21.02.3-x86-64_gcc-8.4.0_musl.Linux-x86_64
+  SDK_URL: https://downloads.openwrt.org/releases/21.02.3/targets/x86/64/
+  SDK_ARCH: x86_64
 
 jobs:
-  matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Detect build target
-        id: set-matrix
-        env:
-          MATRIX_TARGET: x64 arm64
-        run: |
-          if [ "x${MATRIX_TARGET}" = "x" -o "x${MATRIX_TARGET}" = "xall" ]; then \
-            echo "matrix={\"target\":[\"arm64\", \"x64\", \"mipsel\"]}" >> $GITHUB_OUTPUT; \
-          else \
-            targets=""; \
-            for target in ${MATRIX_TARGET}; do \
-              targets="$targets, \"$target\"";
-            done; \
-            echo "matrix={\"target\":[${targets#, }]}" >> $GITHUB_OUTPUT; \
-          fi
   build:
-    needs: matrix
     runs-on: ubuntu-latest
-    name: Build IPKs for ${{ matrix.target }}
-    strategy:
-      matrix: ${{fromJson(needs.matrix.outputs.matrix)}}
+    name: Build IPKs for all
     steps:
       - name: Job Info
         run: |
           apps="luci-app-fogvdn"
           echo "::notice title=Apps::$apps"
+          echo "::notice title=Target::${MATRIX_TARGET}"
 
       - name: Checkout
         uses: actions/checkout@v2
         with:
           path: 'apps'
-
-      - name: Import Env
-        env:
-          MATRIX_TARGET: ${{ matrix.target }}
-        run: cat apps/.github/workflows/${MATRIX_TARGET}.env >> "$GITHUB_ENV"
 
       - name: Initialization environment
         env:
@@ -223,7 +201,7 @@ jobs:
         uses: actions/upload-artifact@main
         if: steps.precompile.outputs.status == 'success' || steps.compile.outputs.status == 'success'
         with:
-          name: ${{ env.SDK_ARCH }}
+          name: all
           path: ${{ env.SDK_NAME }}/bin/packages/${{ env.SDK_ARCH }}
 
       - name: PreCache - Clean
