@@ -93,7 +93,7 @@ run_pear_deploy() {
 
     chmod 700 "${DEPLOY_TMP}" 2>/dev/null || true
 
-    if ! bash "${DEPLOY_TMP}" --install_path=/ --no_restart; then
+    if ! bash "${DEPLOY_TMP}" --install_path=/ --no_restart --force; then
         log_notice 'pear_deploy.sh exited with an error'
         cleanup_deploy_tmp
         return 1
