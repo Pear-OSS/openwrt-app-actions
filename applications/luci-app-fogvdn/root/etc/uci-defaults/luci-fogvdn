@@ -1,0 +1,11 @@
+#!/bin/sh
+
+rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
+
+if ! uci get ucitrack.@fogvdn[-1] >/dev/null 2>&1; then
+    cfg_id="$(uci add ucitrack fogvdn 2>/dev/null)" || exit 1
+    uci set ucitrack.${cfg_id}.init="fogvdn" 2>/dev/null || exit 1
+    uci commit ucitrack 2>/dev/null || exit 1
+fi
+
+exit 0
