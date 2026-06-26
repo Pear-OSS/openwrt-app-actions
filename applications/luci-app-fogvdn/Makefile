@@ -10,6 +10,7 @@ LUCI_TITLE:=Fogvdn Luci App
 LUCI_PKGARCH:=all
 PKG_VERSION:=14
 PKG_RELEASE:=$(AUTORELEASE)
+PKG_PO_VERSION:=$(if $(PKG_RELEASE),$(PKG_VERSION)-r$(PKG_RELEASE),$(PKG_VERSION))
 PKG_NAME:=luci-app-fogvdn
 LUCI_DEPENDS:=+bash +jq +getopt +ntpdate +whereis +smartmontools +coreutils +coreutils-nohup +coreutils-install +coreutils-df +coreutils-realpath +lsblk
 LUCI_SUBMENU_FORCED:=none
